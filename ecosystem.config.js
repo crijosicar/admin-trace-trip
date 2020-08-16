@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
     {
-      name: "ADMIN Services | TrazeTrip",
+      name: "Admin Services | TrazeTrip",
       script: "npm",
       args: "start",
       cwd: "/var/www/admin-trace-trip/",
@@ -29,7 +29,7 @@ module.exports = {
       path: "/var/www/admin-trace-trip",
       ssh_options: ["StrictHostKeyChecking=no", "PasswordAuthentication=no"],
       "pre-setup": "rimraf node_modules && rimraf dist",
-      "post-setup": "npm install --unsafe-perm && react-scripts build",
+      "post-setup": "npm install --unsafe-perm && npm run build",
       "post-deploy": "pm2 start ecosystem.config.js --env staging",
     },
   },
