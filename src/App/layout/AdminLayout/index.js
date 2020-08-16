@@ -1,5 +1,5 @@
 import React, { Component, Suspense } from "react";
-import { Route, Switch, Redirect } from "react-router-dom";
+import { Switch, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import Fullscreen from "react-full-screen";
 import windowSize from "react-window-size";
@@ -11,6 +11,7 @@ import Loader from "../Loader";
 import routes from "../../../routes";
 import Aux from "../../../hoc/_Aux";
 import * as actionTypes from "../../../store/actions";
+import ComponentLayout from "../../components/ComponentLayout";
 
 import "./app.scss";
 
@@ -26,7 +27,7 @@ class AdminLayout extends Component {
     }
   };
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     if (
       this.props.windowWidth > 992 &&
       this.props.windowWidth <= 1024 &&
@@ -43,7 +44,6 @@ class AdminLayout extends Component {
   }
 
   render() {
-    /* full screen exit call */
     document.addEventListener("fullscreenchange", this.fullScreenExitHandler);
     document.addEventListener(
       "webkitfullscreenchange",
@@ -56,15 +56,7 @@ class AdminLayout extends Component {
     document.addEventListener("MSFullscreenChange", this.fullScreenExitHandler);
 
     const menu = routes.map((route, index) => {
-      return route.component ? (
-        <Route
-          key={index}
-          path={route.path}
-          exact={route.exact}
-          name={route.name}
-          render={(props) => <route.component {...props} />}
-        />
-      ) : null;
+      return route.component ? ComponentLayout(route, index) : null;
     });
 
     return (

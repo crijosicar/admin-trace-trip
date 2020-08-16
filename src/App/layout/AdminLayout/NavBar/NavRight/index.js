@@ -43,7 +43,7 @@ class NavRight extends Component {
                   </li>
                   <li>
                     <a href={DEMO.BLANK_LINK} className="dropdown-item">
-                      <i className="feather icon-lock" /> Lock Screen
+                      <i className="feather icon-unlock" /> Log out
                     </a>
                   </li>
                 </ul>

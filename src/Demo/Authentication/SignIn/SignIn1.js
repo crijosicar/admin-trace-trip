@@ -1,15 +1,51 @@
 import React, { Component } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, Redirect } from "react-router-dom";
+import jwtDecode from "jwt-decode";
 
 import "./../../../assets/scss/style.scss";
 import Aux from "../../../hoc/_Aux";
-import Breadcrumb from "../../../App/layout/AdminLayout/Breadcrumb";
 
 class SignUp1 extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = { isAuthenticated: false };
+    this.onLogin = this.onLogin.bind(this);
+  }
+
+  componentDidMount() {
+    const token = localStorage.getItem("access_token");
+
+    if (token) {
+      const tokenExpiration = jwtDecode(token).exp;
+      const dateNow = new Date();
+
+      if (tokenExpiration < dateNow.getTime() / 1000) {
+        this.setState({
+          isAuthenticated: false,
+        });
+      } else {
+        this.setState({
+          isAuthenticated: true,
+        });
+      }
+    } else {
+      this.setState({
+        isAuthenticated: false,
+      });
+    }
+  }
+
+  onLogin = (e) => {
+    e.preventDefault();
+    console.log("The link was clicked.");
+  };
+
   render() {
-    return (
+    return this.state.isAuthenticated ? (
+      <Redirect to="/dashboard" />
+    ) : (
       <Aux>
-        <Breadcrumb />
         <div className="auth-wrapper">
           <div className="auth-content">
             <div className="auth-bg">
@@ -51,7 +87,12 @@ class SignUp1 extends Component {
                     </label>
                   </div>
                 </div>
-                <button className="btn btn-primary shadow-2 mb-4">Login</button>
+                <button
+                  onClick={this.onLogin}
+                  className="btn btn-primary shadow-2 mb-4"
+                >
+                  Login
+                </button>
                 <p className="mb-2 text-muted">
                   Forgot password?{" "}
                   <NavLink to="/auth/reset-password-1">Reset</NavLink>

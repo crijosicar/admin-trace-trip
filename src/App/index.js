@@ -8,32 +8,12 @@ import Loader from "./layout/Loader";
 import Aux from "../hoc/_Aux";
 import ScrollToTop from "./layout/ScrollToTop";
 import routes from "../route";
-import PrivateRoute from "./components/PrivateRoute";
+import ComponentLayout from "./components/ComponentLayout";
 
 const AdminLayout = Loadable({
   loader: () => import("./layout/AdminLayout"),
   loading: Loader,
 });
-
-const ComponentLayout = (route, index) => {
-  return route.isPrivate ? (
-    <PrivateRoute
-      key={index}
-      path={route.path}
-      exact={route.exact}
-      name={route.name}
-      render={(props) => <route.component {...props} />}
-    />
-  ) : (
-    <Route
-      key={index}
-      path={route.path}
-      exact={route.exact}
-      name={route.name}
-      render={(props) => <route.component {...props} />}
-    />
-  );
-};
 
 class App extends Component {
   render() {
