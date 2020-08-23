@@ -28,7 +28,7 @@ module.exports = {
       repo: "git@github.com/admin-trace-trip.git",
       path: "/var/www/admin-trace-trip",
       ssh_options: ["StrictHostKeyChecking=no", "PasswordAuthentication=no"],
-      "pre-setup": "rimraf node_modules && rimraf dist",
+      "pre-setup": "rimraf node_modules && rimraf build",
       "post-setup": "npm install --unsafe-perm && npm run build",
       "post-deploy": "pm2 start ecosystem.config.js --env staging",
     },
