@@ -60,22 +60,23 @@ export const getUser = () => {
     dispatch(isUserError(false));
     dispatch(isGettingUserInProgress(true));
 
-    const { data } = await API.get("/auth/me");
+    try {
+      const { data } = await API.get("/auth/me");
 
-    if (data) {
-      const { _id: userId } = data;
+      if (data) {
+        const { _id: userId } = data;
 
-      const { data: userData } = await API.get(`/users/${userId}`);
+        const { data: userData } = await API.get(`/users/${userId}`);
 
-      if (userData) {
-        dispatch(isGettingUserInProgress(false));
-        return dispatch(setUser(userData));
+        if (userData) {
+          dispatch(isGettingUserInProgress(false));
+          return dispatch(setUser(userData));
+        }
       }
-
+    } catch (error) {
+      dispatch(isGettingUserInProgress(false));
       return dispatch(isUserError(true));
     }
-
-    return dispatch(isUserError(true));
   };
 };
 
@@ -92,7 +93,8 @@ export const updateUser = (userId, updatedUser = {}) => {
         return dispatch(setUser(userData));
       }
     } catch (error) {
-      return dispatch(isUpdateUserError(true));
+      dispatch(isUpdatingUserInProgress(false));
+      return dispatch(isUpdateUserError(error.message));
     }
   };
 };

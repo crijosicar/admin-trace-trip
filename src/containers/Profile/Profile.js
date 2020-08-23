@@ -6,7 +6,7 @@ import { Row, Col, Card, Form, Button } from "react-bootstrap";
 import "./../../assets/scss/style.scss";
 import Aux from "../../hoc/_Aux";
 import Loader from "../../app/layout/Loader";
-import UcFirst from "../../app/components/UcFirst";
+import AlertDismissible from "../../app/components/Alerts";
 import {
   updateUser,
   updateUserPassword,
@@ -17,16 +17,6 @@ class Profile extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      avatar: "",
-      firstName: "",
-      lastName: "",
-      email: "",
-      password: "",
-      status: "",
-      confirmpassword: "",
-    };
-
     this.handleChange = this.handleChange.bind(this);
     this.handleOnUpdateUser = this.handleOnUpdateUser.bind(this);
     this.handleOnUpdateAvatarUser = this.handleOnUpdateAvatarUser.bind(this);
@@ -35,13 +25,24 @@ class Profile extends Component {
     );
   }
 
+  state = {
+    avatar: "",
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    status: "",
+    confirmpassword: "",
+    formSubmitted: false,
+  };
+
   static propTypes = {
     onUpdateUser: PropTypes.func.isRequired,
     onUpdateUserPassword: PropTypes.func.isRequired,
     onUpdateUserAvatar: PropTypes.func.isRequired,
     user: PropTypes.object.isRequired,
     isUserUpdateInProgress: PropTypes.bool.isRequired,
-    isUpdateUserError: PropTypes.bool.isRequired,
+    isUpdateUserError: PropTypes.any.isRequired,
   };
 
   handleChange = (name, val) => {
@@ -52,12 +53,11 @@ class Profile extends Component {
   };
 
   handleOnUpdateUser = (e) => {
-    e.preventDefault();
-
-    this.props.onUpdateUser({
-      firstName: this.state.firstName,
-      lastName: this.state.lastName,
+    this.props.onUpdateUser(this.props.user._id, {
+      firstName: this.state.firstName || this.props.user.firstName,
+      lastName: this.state.lastName || this.props.user.lastName,
     });
+    this.setState({ formSubmitted: true });
   };
 
   handleOnUpdateAvatarUser = (e) => {
@@ -76,18 +76,24 @@ class Profile extends Component {
     // this.props.onUpdateUserPassword();
   };
 
+  handleSetShow = (el) => {
+    el.show = false;
+  };
+
   render() {
-    console.log("this.props =>", this.props);
-    const { isUserUpdateInProgress } = this.props;
-    const buttonVariants = ["success"];
+    const {
+      isUserUpdateInProgress,
+      isUpdatingUserAvatarInProgress,
+      isUpdatingUserPasswordInProgress,
+      isUpdateUserError,
+    } = this.props;
 
-    const buttonBadges = buttonVariants.map((variant, idx) => (
-      <Button key={idx} variant={variant}>
-        <UcFirst text={variant} />
-      </Button>
-    ));
-
-    if (isUserUpdateInProgress) return <Loader />;
+    if (
+      isUserUpdateInProgress ||
+      isUpdatingUserAvatarInProgress ||
+      isUpdatingUserPasswordInProgress
+    )
+      return <Loader />;
 
     return (
       <Aux>
@@ -98,9 +104,16 @@ class Profile extends Component {
                 <Card.Title as="h5">Profile</Card.Title>
               </Card.Header>
               <Card.Body>
-                <Card title="Button Badges">{buttonBadges}</Card>
                 <h5>Personal information</h5>
                 <hr />
+                {this.state.formSubmitted && (
+                  <AlertDismissible
+                    variant={isUpdateUserError ? "danger" : "success"}
+                    message={
+                      isUpdateUserError ? isUpdateUserError : "Data updated!"
+                    }
+                  />
+                )}
                 <Row>
                   <Col md={6}>
                     <Form>
@@ -109,7 +122,9 @@ class Profile extends Component {
                         <Form.Control
                           type="text"
                           placeholder="Enter FirstName"
-                          defaultValue={this.props.user.firstName}
+                          defaultValue={
+                            this.state.firstName || this.props.user.firstName
+                          }
                           onChange={(v) =>
                             this.handleChange("firstName", v.target.value)
                           }
@@ -141,7 +156,9 @@ class Profile extends Component {
                       <Form.Control
                         type="text"
                         placeholder="Enter LastName"
-                        defaultValue={this.props.user.lastName}
+                        defaultValue={
+                          this.state.lastName || this.props.user.lastName
+                        }
                         onChange={(v) =>
                           this.handleChange("lastName", v.target.value)
                         }
@@ -167,7 +184,6 @@ class Profile extends Component {
                 <Card.Title as="h5">Avatar</Card.Title>
               </Card.Header>
               <Card.Body>
-                <Card title="Button Badges">{buttonBadges}</Card>
                 <Row>
                   <Col md={6}>
                     <Form>
@@ -197,10 +213,9 @@ class Profile extends Component {
             </Card>
             <Card>
               <Card.Header>
-                <Card.Title as="h5">Avatar</Card.Title>
+                <Card.Title as="h5">Change Password</Card.Title>
               </Card.Header>
               <Card.Body>
-                <Card title="Button Badges">{buttonBadges}</Card>
                 <Row>
                   <Col md={6}>
                     <Form>

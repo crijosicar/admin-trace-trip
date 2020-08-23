@@ -32,7 +32,6 @@ export const authenticateUser = ({ email, password }) => {
       const { data } = await API.post("/auth/login", { email, password });
 
       if (data) {
-        console.log("data =>", data);
         dispatch(isAthenticationInProgress(false));
         return dispatch(setAccessToken(data.access_token));
       }

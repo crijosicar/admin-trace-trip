@@ -18,9 +18,7 @@ class NavRight extends Component {
     listOpen: false,
   };
 
-  componentDidMount() {
-    this.props.onGetUser();
-  }
+  componentDidMount = () => this.props.onGetUser();
 
   handleOnLogout = () => this.props.onLogout();
 
@@ -38,6 +36,7 @@ class NavRight extends Component {
               <Dropdown.Menu alignRight className="profile-notification">
                 <div className="pro-head">
                   <img
+                    height={40}
                     src={user.avatar}
                     className="img-radius"
                     alt="User Profile"
