@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import { Row, Col, Badge, Button } from "react-bootstrap";
 
 import Aux from "../../../hoc/_Aux";
-import Card from "../../../App/components/MainCard";
-import UcFirst from "../../../App/components/UcFirst";
+import Card from "../../../app/components/MainCard";
+import UcFirst from "../../../app/components/UcFirst";
 
 class Badges extends Component {
   render() {

@@ -1,21 +1,26 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { createStore } from "redux";
 import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
+import { PersistGate } from "redux-persist/integration/react";
 
-import App from "./App/index";
+import App from "./app/index";
 import * as serviceWorker from "./serviceWorker";
-import reducer from "./store/reducer";
+import configureStore from "./store/index";
 import config from "./config";
+import Loader from "../src/app/layout/Loader";
 
-const store = createStore(reducer);
+require("dotenv").config();
+
+const { persistor, store } = configureStore();
 
 const app = (
   <Provider store={store}>
-    <BrowserRouter basename={config.basename}>
-      <App />
-    </BrowserRouter>
+    <PersistGate loading={<Loader />} persistor={persistor}>
+      <BrowserRouter basename={config.basename}>
+        <App />
+      </BrowserRouter>
+    </PersistGate>
   </Provider>
 );
 

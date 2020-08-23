@@ -6,16 +6,17 @@ window.$ = $;
 global.jQuery = $;
 
 // Dashboard
-const Dashboard = React.lazy(() => import("./Demo/Dashboard/Default"));
+const Dashboard = React.lazy(() => import("./containers/Dashboard/Default"));
 
 // Pages
-const Home = React.lazy(() => import("./Demo/Pages/Home/Home"));
+const Home = React.lazy(() => import("./containers/Pages/Home/Home"));
+const Profile = React.lazy(() => import("./containers/Profile/Profile"));
 
 const routes = [
   {
     path: "/dashboard",
     exact: true,
-    name: "Default",
+    name: "Dashboard",
     component: Dashboard,
     isPrivate: true,
   },
@@ -24,6 +25,13 @@ const routes = [
     exact: true,
     name: "Home",
     component: Home,
+    isPrivate: true,
+  },
+  {
+    path: "/profile",
+    exact: true,
+    name: "Profile",
+    component: Profile,
     isPrivate: true,
   },
 ];

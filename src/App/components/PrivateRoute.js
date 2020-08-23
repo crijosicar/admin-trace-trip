@@ -1,44 +1,37 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Route, Redirect } from "react-router-dom";
+import { connect } from "react-redux";
 import jwtDecode from "jwt-decode";
-import { useSelector } from "react-redux";
 
-const PrivateRoute = ({ component: Component, ...rest }) => {
-  const auth = useSelector((state) => state.auth);
-  const [isAuthenticated, setIsAuthenticated] = useState(null);
+import { clearAccessToken } from "../../actions/signin";
+import { clearUser } from "../../actions/user";
 
-  useEffect(() => {
-    let token = localStorage.getItem("access_token");
+const PrivateRoute = ({ component: Component, accessToken, ...rest }) => {
+  if (accessToken) {
+    let tokenExpiration = jwtDecode(accessToken).exp;
+    let dateNow = new Date();
 
-    if (token) {
-      let tokenExpiration = jwtDecode(token).exp;
-
-      let dateNow = new Date();
-
-      if (tokenExpiration < dateNow.getTime() / 1000) {
-        setIsAuthenticated(false);
-      } else {
-        setIsAuthenticated(true);
-      }
-    } else {
-      setIsAuthenticated(false);
+    if (tokenExpiration < dateNow.getTime() / 1000) {
+      rest.onClearAccessToken();
+      rest.onClearUser();
     }
-  }, [auth]);
-
-  if (isAuthenticated === null) return <></>;
+  }
 
   return (
     <Route
       {...rest}
       render={(props) =>
-        !isAuthenticated ? (
-          <Redirect to="/auth/signin" />
-        ) : (
-          <Component {...props} />
-        )
+        !accessToken ? <Redirect to="/auth/signin" /> : <Component {...props} />
       }
     />
   );
 };
 
-export default PrivateRoute;
+const mapStateToProps = (state) => ({ ...state.signin });
+
+const mapDispatchToProps = {
+  onClearAccessToken: clearAccessToken,
+  onClearUser: clearUser,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(PrivateRoute);

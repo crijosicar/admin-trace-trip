@@ -10,7 +10,7 @@ import Breadcrumb from "./Breadcrumb";
 import Loader from "../Loader";
 import routes from "../../../routes";
 import Aux from "../../../hoc/_Aux";
-import * as actionTypes from "../../../store/actions";
+import * as actionTypes from "../../../reducers/types";
 import ComponentLayout from "../../components/ComponentLayout";
 
 import "./app.scss";
@@ -94,11 +94,11 @@ class AdminLayout extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    defaultPath: state.defaultPath,
-    isFullScreen: state.isFullScreen,
-    collapseMenu: state.collapseMenu,
-    configBlock: state.configBlock,
-    layout: state.layout,
+    defaultPath: state.layouts.defaultPath,
+    isFullScreen: state.layouts.isFullScreen,
+    collapseMenu: state.layouts.collapseMenu,
+    configBlock: state.layouts.configBlock,
+    layout: state.layouts.layout,
   };
 };
 

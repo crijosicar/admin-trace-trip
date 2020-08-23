@@ -1,7 +1,7 @@
 import React from "react";
 
-const Signin1 = React.lazy(() =>
-  import("./Demo/Authentication/SignIn/SignIn1")
+const Signin = React.lazy(() =>
+  import("./containers/Authentication/SignIn/SignIn")
 );
 
 const route = [
@@ -9,7 +9,7 @@ const route = [
     path: "/auth/signin",
     exact: true,
     name: "Signin",
-    component: Signin1,
+    component: Signin,
     isPrivate: false,
   },
 ];
