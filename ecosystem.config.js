@@ -3,7 +3,7 @@ module.exports = {
     {
       name: "Admin Services | TrazeTrip",
       script: "npx",
-      args: "serve -p $PORT -s build",
+      args: "serve -s build -l $PORT",
       cwd: "/var/www/admin-trace-trip/",
       instances: 1,
       autorestart: true,
