@@ -34,7 +34,8 @@
     "start": "$PORT react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "prod": "serve -p $PORT -s build"
   },
   "eslintConfig": {
     "extends": "react-app"
