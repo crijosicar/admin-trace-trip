@@ -2,8 +2,8 @@ module.exports = {
   apps: [
     {
       name: "Admin Services | TrazeTrip",
-      script: "npm",
-      args: "prod",
+      script: "npx",
+      args: "serve -p $PORT -s build",
       cwd: "/var/www/admin-trace-trip/",
       instances: 1,
       autorestart: true,
