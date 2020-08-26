@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Dropdown } from "react-bootstrap";
 import { connect } from "react-redux";
+import { Redirect } from "react-router-dom";
 
 import Aux from "../../../../../hoc/_Aux";
 import DEMO from "../../../../../store/constant";
@@ -16,17 +17,26 @@ class NavRight extends Component {
 
   state = {
     listOpen: false,
+    redirect: false,
   };
 
   componentDidMount = () => this.props.onGetUser();
 
-  handleOnLogout = () => this.props.onLogout();
+  handleOnLogout = () => {
+    this.props.onLogout();
+    this.setState({ redirect: true });
+  };
+
+  renderRedirect = () => {
+    if (this.state.redirect) return <Redirect to="/auth/signin" />;
+  };
 
   render() {
     const { user } = this.props;
 
     return (
       <Aux>
+        {this.renderRedirect()}
         <ul className="navbar-nav ml-auto">
           <li>
             <Dropdown alignRight={!this.props.rtlLayout} className="drp-user">
