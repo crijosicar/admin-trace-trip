@@ -10,7 +10,7 @@ import configureStore from "./store/index";
 import config from "./config";
 import Loader from "../src/app/layout/Loader";
 
-// require("dotenv").config();
+require("dotenv").config();
 
 const { persistor, store } = configureStore();
 
