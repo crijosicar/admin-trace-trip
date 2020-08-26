@@ -16,6 +16,7 @@ class SignUp extends Component {
     this.state = {
       email: null,
       password: null,
+      redirect: false,
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -36,7 +37,9 @@ class SignUp extends Component {
     });
   };
 
-  handleSubmit = (e) => {
+  timeout = (delay) => new Promise((res) => setTimeout(res, delay));
+
+  handleSubmit = async (e) => {
     const { email, password } = this.state;
 
     if (email && password) {
@@ -44,14 +47,18 @@ class SignUp extends Component {
         email,
         password,
       });
+
+      await this.timeout(500);
+
+      const accessToken = getAccessToken();
+
+      if (accessToken && this.props.accessToken)
+        this.setState({ redirect: true });
     }
   };
 
   renderRedirect = () => {
-    const accessToken = getAccessToken();
-
-    if (accessToken && this.props.accessToken)
-      return <Redirect to="/dashboard" />;
+    if (this.state.redirect) return <Redirect to="/dashboard" />;
   };
 
   render() {

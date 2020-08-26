@@ -85,7 +85,7 @@ export const getUser = () => {
       }
     } catch (error) {
       dispatch(isGettingUserInProgress(false));
-      return dispatch(isUserError(true));
+      return dispatch(isUserError(error.message));
     }
   };
 };
