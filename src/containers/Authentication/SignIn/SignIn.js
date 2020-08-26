@@ -7,6 +7,7 @@ import "./../../../assets/scss/style.scss";
 import Aux from "../../../hoc/_Aux";
 import Loader from "../../../app/layout/Loader";
 import { authenticateUser } from "../../../actions/signin";
+import { getAccessToken } from "../../../api/api";
 
 class SignUp extends Component {
   constructor(props) {
@@ -46,61 +47,65 @@ class SignUp extends Component {
     }
   };
 
+  renderRedirect = () => {
+    const accessToken = getAccessToken();
+
+    if (accessToken && this.props.accessToken)
+      return <Redirect to="/dashboard" />;
+  };
+
   render() {
-    const { accessToken, isAuthInProgress } = this.props;
+    const { isAuthInProgress } = this.props;
 
     if (isAuthInProgress) return <Loader />;
 
     return (
-      (accessToken && <Redirect to="/dashboard" />) || (
-        <Aux>
-          <div className="auth-wrapper">
-            <div className="auth-content">
-              <div className="auth-bg">
-                <span className="r" />
-                <span className="r s" />
-                <span className="r s" />
-                <span className="r" />
-              </div>
-              <div className="card">
-                <div className="card-body text-center">
-                  <div className="mb-4">
-                    <i className="feather icon-unlock auth-icon" />
-                  </div>
-                  <h3 className="mb-4">Login</h3>
-                  <div className="input-group mb-3">
-                    <input
-                      type="email"
-                      className="form-control"
-                      placeholder="Email"
-                      onChange={(v) =>
-                        this.handleChange("email", v.target.value)
-                      }
-                    />
-                  </div>
-                  <div className="input-group mb-4">
-                    <input
-                      type="password"
-                      className="form-control"
-                      placeholder="password"
-                      onChange={(v) =>
-                        this.handleChange("password", v.target.value)
-                      }
-                    />
-                  </div>
-                  <button
-                    disabled={!this.state.email || !this.state.password}
-                    onClick={() => this.handleSubmit()}
-                    className="btn btn-primary shadow-2 mb-4"
-                  >
-                    Login
-                  </button>
+      <Aux>
+        {this.renderRedirect()}
+        <div className="auth-wrapper">
+          <div className="auth-content">
+            <div className="auth-bg">
+              <span className="r" />
+              <span className="r s" />
+              <span className="r s" />
+              <span className="r" />
+            </div>
+            <div className="card">
+              <div className="card-body text-center">
+                <div className="mb-4">
+                  <i className="feather icon-unlock auth-icon" />
                 </div>
+                <h3 className="mb-4">Login</h3>
+                <div className="input-group mb-3">
+                  <input
+                    type="email"
+                    className="form-control"
+                    placeholder="Email"
+                    onChange={(v) => this.handleChange("email", v.target.value)}
+                  />
+                </div>
+                <div className="input-group mb-4">
+                  <input
+                    type="password"
+                    className="form-control"
+                    placeholder="password"
+                    onChange={(v) =>
+                      this.handleChange("password", v.target.value)
+                    }
+                  />
+                </div>
+                <button
+                  disabled={!this.state.email || !this.state.password}
+                  onClick={() => this.handleSubmit()}
+                  className="btn btn-primary shadow-2 mb-4"
+                >
+                  Login
+                </button>
               </div>
             </div>
           </div>
-        </Aux>
-      )
+        </div>
+      </Aux>
     );
   }
 }

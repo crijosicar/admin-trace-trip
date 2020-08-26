@@ -36,6 +36,7 @@ export const authenticateUser = ({ email, password }) => {
         return dispatch(setAccessToken(data.access_token));
       }
     } catch (error) {
+      dispatch(isAthenticationInProgress(false));
       return dispatch(isAuthenticationError(true));
     }
   };

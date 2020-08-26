@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { Row, Col, Card, Form, Button } from "react-bootstrap";
+import { Formik } from "formik";
 
 import "./../../assets/scss/style.scss";
 import Aux from "../../hoc/_Aux";
@@ -33,7 +34,9 @@ class Profile extends Component {
     password: "",
     status: "",
     confirmpassword: "",
-    formSubmitted: false,
+    formUpdateUserSubmitted: false,
+    formUpdateUserAvatarSubmitted: false,
+    formUpdateUserPasswordSubmitted: false,
   };
 
   static propTypes = {
@@ -57,27 +60,24 @@ class Profile extends Component {
       firstName: this.state.firstName || this.props.user.firstName,
       lastName: this.state.lastName || this.props.user.lastName,
     });
-    this.setState({ formSubmitted: true });
+    this.setState({ formUpdateUserSubmitted: true });
   };
 
   handleOnUpdateAvatarUser = (e) => {
     e.preventDefault();
 
-    console.log(this.state.avatar);
-    // this.props.onUpdateUserAvatar();
+    const formData = new FormData();
+    formData.append("avatar", this.state.avatar, this.state.avatar.name);
+
+    this.props.onUpdateUserAvatar(this.props.user._id, formData);
+    this.setState({ formUpdateUserAvatarSubmitted: true });
   };
 
-  handleOnUpdatePasswordUser = (e) => {
-    e.preventDefault();
-
-    console.log(this.state.password);
-    console.log(this.state.confirmpassword);
-
-    // this.props.onUpdateUserPassword();
-  };
-
-  handleSetShow = (el) => {
-    el.show = false;
+  handleOnUpdatePasswordUser = ({ password }) => {
+    this.props.onUpdateUserPassword(this.props.user._id, {
+      password,
+    });
+    this.setState({ formUpdateUserPasswordSubmitted: true });
   };
 
   render() {
@@ -86,6 +86,8 @@ class Profile extends Component {
       isUpdatingUserAvatarInProgress,
       isUpdatingUserPasswordInProgress,
       isUpdateUserError,
+      isUpdateUserAvatarError,
+      isUpdateUserPasswordError,
     } = this.props;
 
     if (
@@ -106,7 +108,7 @@ class Profile extends Component {
               <Card.Body>
                 <h5>Personal information</h5>
                 <hr />
-                {this.state.formSubmitted && (
+                {this.state.formUpdateUserSubmitted && (
                   <AlertDismissible
                     variant={isUpdateUserError ? "danger" : "success"}
                     message={
@@ -184,6 +186,16 @@ class Profile extends Component {
                 <Card.Title as="h5">Avatar</Card.Title>
               </Card.Header>
               <Card.Body>
+                {this.state.formUpdateUserAvatarSubmitted && (
+                  <AlertDismissible
+                    variant={isUpdateUserAvatarError ? "danger" : "success"}
+                    message={
+                      isUpdateUserAvatarError
+                        ? isUpdateUserAvatarError
+                        : "Avatar updated!"
+                    }
+                  />
+                )}
                 <Row>
                   <Col md={6}>
                     <Form>
@@ -195,7 +207,11 @@ class Profile extends Component {
                       />
                       <Form.Group controlId="avatarForm.avatar">
                         <Form.Label>Profile picture</Form.Label>
-                        <Form.File />
+                        <Form.File
+                          onChange={(e) =>
+                            this.handleChange("avatar", e.target.files[0])
+                          }
+                        />
                         <Form.Text className="text-muted">
                           This image is for going to be in your profile.
                         </Form.Text>
@@ -216,41 +232,111 @@ class Profile extends Component {
                 <Card.Title as="h5">Change Password</Card.Title>
               </Card.Header>
               <Card.Body>
+                {this.state.formUpdateUserPasswordSubmitted && (
+                  <AlertDismissible
+                    variant={isUpdateUserPasswordError ? "danger" : "success"}
+                    message={
+                      isUpdateUserPasswordError
+                        ? isUpdateUserPasswordError
+                        : "Password updated!"
+                    }
+                  />
+                )}
                 <Row>
-                  <Col md={6}>
-                    <Form>
-                      <Form.Group controlId="passwordForm.Password">
-                        <Form.Label>Password</Form.Label>
-                        <Form.Control
-                          type="password"
-                          placeholder="Enter Password"
-                          onChange={(v) =>
-                            this.handleChange("password", v.target.value)
-                          }
-                        />
-                      </Form.Group>
-                      <Button
-                        onClick={this.handleOnUpdatePasswordUser}
-                        variant="primary"
-                      >
-                        Submit
-                      </Button>
-                    </Form>
-                  </Col>
-                  <Col md={6}>
-                    <Form>
-                      <Form.Group controlId="passwordForm.ConfirmPassword">
-                        <Form.Label>Confirm Password</Form.Label>
-                        <Form.Control
-                          type="password"
-                          placeholder="Re-Enter Password"
-                          onChange={(v) =>
-                            this.handleChange("confirmpassword", v.target.value)
-                          }
-                        />
-                      </Form.Group>
-                    </Form>
-                  </Col>
+                  <Formik
+                    onSubmit={this.handleOnUpdatePasswordUser}
+                    initialValues={{
+                      password: "",
+                      confirmPassword: "",
+                    }}
+                    validate={(values) => {
+                      const errors = {};
+                      if (!values.password) {
+                        errors.password = "Required";
+                      } else if (
+                        !/(?=.*[a-z])(?=.*[A-Z])(?=.*d)(?=.*[$@$!#.])[A-Za-zd$@$!%*?&.]{8,20}/i.test(
+                          values.password
+                        )
+                      ) {
+                        errors.password = "Invalid password";
+                      }
+
+                      if (!values.confirmPassword) {
+                        errors.confirmPassword = "Required";
+                      } else if (values.confirmPassword !== values.password) {
+                        errors.confirmPassword =
+                          "Confirm Password should match with Password";
+                      }
+
+                      return errors;
+                    }}
+                  >
+                    {({
+                      handleSubmit,
+                      handleChange,
+                      values,
+                      touched,
+                      isValid,
+                      errors,
+                    }) => (
+                      <Form noValidate onSubmit={handleSubmit} md={12}>
+                        <Col md={6}>
+                          <Form.Group controlId="passwordForm.Password">
+                            <Form.Label>Password</Form.Label>
+                            <Form.Control
+                              type="password"
+                              name="password"
+                              value={values.password}
+                              onChange={handleChange}
+                              isValid={touched.password && !errors.password}
+                              isInvalid={!!errors.password}
+                              placeholder="Enter Password"
+                              aria-describedby="passwordHelpBlock"
+                            />{" "}
+                            <Form.Control.Feedback>
+                              Looks good!
+                            </Form.Control.Feedback>
+                            <Form.Control.Feedback type="invalid">
+                              {errors.password}
+                            </Form.Control.Feedback>
+                            <Form.Text id="passwordHelpBlock" muted>
+                              Your password must be 8-20 characters long,
+                              contain letters and numbers, and must not contain
+                              spaces, special characters, or emoji.
+                            </Form.Text>
+                          </Form.Group>
+                        </Col>
+                        <Col md={6}>
+                          <Form.Group controlId="passwordForm.ConfirmPassword">
+                            <Form.Label>Confirm Password</Form.Label>
+                            <Form.Control
+                              type="password"
+                              name="confirmPassword"
+                              value={values.confirmPassword}
+                              onChange={handleChange}
+                              isValid={
+                                touched.confirmPassword &&
+                                !errors.confirmPassword
+                              }
+                              isInvalid={!!errors.confirmPassword}
+                              placeholder="Re-Enter Password"
+                            />
+                            <Form.Control.Feedback>
+                              Looks good!
+                            </Form.Control.Feedback>
+                            <Form.Control.Feedback type="invalid">
+                              {errors.confirmPassword}
+                            </Form.Control.Feedback>
+                          </Form.Group>
+                        </Col>
+                        <Col md={12}>
+                          <Button type="submit" variant="primary">
+                            Submit
+                          </Button>
+                        </Col>
+                      </Form>
+                    )}
+                  </Formik>
                 </Row>
               </Card.Body>
             </Card>

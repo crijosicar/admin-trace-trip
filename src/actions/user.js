@@ -1,4 +1,4 @@
-import API from "../api/api";
+import API, { getAccessToken } from "../api/api";
 import * as types from "../reducers/types";
 
 export const isGettingUserInProgress = (isUserInProgress) => ({
@@ -14,6 +14,11 @@ export const isUserError = (isUserError) => ({
 export const setUser = (user) => ({
   type: types.SET_USER,
   user,
+});
+
+export const setAvatarUser = (avatar) => ({
+  type: types.SET_AVATAR_USER,
+  avatar,
 });
 
 export const clearUser = () => ({
@@ -59,14 +64,19 @@ export const getUser = () => {
     dispatch(clearUser());
     dispatch(isUserError(false));
     dispatch(isGettingUserInProgress(true));
+    const headers = { authorization: `Bearer ${getAccessToken()}` };
 
     try {
-      const { data } = await API.get("/auth/me");
+      const { data } = await API.get("/auth/me", {
+        headers,
+      });
 
       if (data) {
         const { _id: userId } = data;
 
-        const { data: userData } = await API.get(`/users/${userId}`);
+        const { data: userData } = await API.get(`/users/${userId}`, {
+          headers,
+        });
 
         if (userData) {
           dispatch(isGettingUserInProgress(false));
@@ -84,9 +94,16 @@ export const updateUser = (userId, updatedUser = {}) => {
   return async (dispatch) => {
     dispatch(isUpdateUserError(false));
     dispatch(isUpdatingUserInProgress(true));
+    const headers = { authorization: `Bearer ${getAccessToken()}` };
 
     try {
-      const { data: userData } = await API.put(`/users/${userId}`, updatedUser);
+      const { data: userData } = await API.put(
+        `/users/${userId}`,
+        updatedUser,
+        {
+          headers,
+        }
+      );
 
       if (userData) {
         dispatch(isUpdatingUserInProgress(false));
@@ -103,11 +120,15 @@ export const updateUserPassword = (userId, updatedUser = {}) => {
   return async (dispatch) => {
     dispatch(isUpdateUserPasswordError(false));
     dispatch(isUpdatingUserPasswordInProgress(true));
+    const headers = { authorization: `Bearer ${getAccessToken()}` };
 
     try {
       const { data: userData } = await API.put(
         `/users/${userId}/password`,
-        updatedUser
+        updatedUser,
+        {
+          headers,
+        }
       );
 
       if (userData) {
@@ -115,7 +136,8 @@ export const updateUserPassword = (userId, updatedUser = {}) => {
         return dispatch(setUser(userData));
       }
     } catch (error) {
-      return dispatch(isUpdateUserPasswordError(true));
+      dispatch(isUpdatingUserPasswordInProgress(false));
+      return dispatch(isUpdateUserPasswordError(error.message));
     }
   };
 };
@@ -124,19 +146,24 @@ export const updateUserAvatar = (userId, updatedUser = {}) => {
   return async (dispatch) => {
     dispatch(isUpdateUserAvatarError(false));
     dispatch(isUpdatingUserAvatarInProgress(true));
+    const headers = { authorization: `Bearer ${getAccessToken()}` };
 
     try {
       const { data: userData } = await API.put(
         `/users/${userId}/avatar`,
-        updatedUser
+        updatedUser,
+        {
+          headers,
+        }
       );
 
       if (userData) {
         dispatch(isUpdatingUserAvatarInProgress(false));
-        return dispatch(setUser(userData));
+        return dispatch(setAvatarUser(userData.path));
       }
     } catch (error) {
-      return dispatch(isUpdateUserAvatarError(true));
+      dispatch(isUpdatingUserAvatarInProgress(false));
+      return dispatch(isUpdateUserAvatarError(error.message));
     }
   };
 };

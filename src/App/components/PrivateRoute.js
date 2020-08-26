@@ -5,8 +5,11 @@ import jwtDecode from "jwt-decode";
 
 import { clearAccessToken } from "../../actions/signin";
 import { clearUser } from "../../actions/user";
+import { getAccessToken } from "../../api/api";
 
-const PrivateRoute = ({ component: Component, accessToken, ...rest }) => {
+const PrivateRoute = ({ component: Component, ...rest }) => {
+  const accessToken = getAccessToken();
+
   if (accessToken) {
     let tokenExpiration = jwtDecode(accessToken).exp;
     let dateNow = new Date();

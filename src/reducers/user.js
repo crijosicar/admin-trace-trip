@@ -66,6 +66,12 @@ const userReducer = (state = initialState, action) => {
           action.isUpdatingUserPasswordInProgress,
       };
     }
+    case types.SET_AVATAR_USER: {
+      return {
+        ...state,
+        user: { ...state.user, avatar: action.avatar },
+      };
+    }
     default:
       return state;
   }
