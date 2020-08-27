@@ -50,7 +50,9 @@ class SignUp extends Component {
 
       await this.timeout(500);
 
-      const accessToken = getAccessToken();
+      const accessToken = await getAccessToken();
+
+      console.log(accessToken && this.props.accessToken);
 
       if (accessToken && this.props.accessToken)
         this.setState({ redirect: true });

@@ -6,15 +6,18 @@ const instance = axios.create({
   timeout: process.env.REACT_APP_API_TIMEOUT,
 });
 
-export const getAccessToken = () => {
-  const rootStore = localStorage.getItem("persist:root");
+export const getAccessToken = async () => {
+  return new Promise((resolve) => {
+    const rootStore = localStorage.getItem("persist:root");
 
-  if (rootStore) {
-    const { signin } = JSON.parse(rootStore);
-    return get(JSON.parse(signin), "accessToken");
-  }
+    if (rootStore) {
+      const { signin } = JSON.parse(rootStore);
 
-  return null;
+      return resolve(get(JSON.parse(signin), "accessToken"));
+    }
+
+    return resolve(null);
+  });
 };
 
 export default instance;

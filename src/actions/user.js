@@ -64,7 +64,7 @@ export const getUser = () => {
     dispatch(clearUser());
     dispatch(isUserError(false));
     dispatch(isGettingUserInProgress(true));
-    const headers = { authorization: `Bearer ${getAccessToken()}` };
+    const headers = { authorization: `Bearer ${await getAccessToken()}` };
 
     try {
       const { data } = await API.get("/auth/me", {
@@ -94,7 +94,7 @@ export const updateUser = (userId, updatedUser = {}) => {
   return async (dispatch) => {
     dispatch(isUpdateUserError(false));
     dispatch(isUpdatingUserInProgress(true));
-    const headers = { authorization: `Bearer ${getAccessToken()}` };
+    const headers = { authorization: `Bearer ${await getAccessToken()}` };
 
     try {
       const { data: userData } = await API.put(
@@ -120,7 +120,7 @@ export const updateUserPassword = (userId, updatedUser = {}) => {
   return async (dispatch) => {
     dispatch(isUpdateUserPasswordError(false));
     dispatch(isUpdatingUserPasswordInProgress(true));
-    const headers = { authorization: `Bearer ${getAccessToken()}` };
+    const headers = { authorization: `Bearer ${await getAccessToken()}` };
 
     try {
       const { data: userData } = await API.put(
@@ -146,7 +146,7 @@ export const updateUserAvatar = (userId, updatedUser = {}) => {
   return async (dispatch) => {
     dispatch(isUpdateUserAvatarError(false));
     dispatch(isUpdatingUserAvatarInProgress(true));
-    const headers = { authorization: `Bearer ${getAccessToken()}` };
+    const headers = { authorization: `Bearer ${await getAccessToken()}` };
 
     try {
       const { data: userData } = await API.put(
