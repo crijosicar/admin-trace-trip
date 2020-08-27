@@ -23,20 +23,20 @@ export const clearAccessToken = () => ({
 
 export const authenticateUser = ({ email, password }) => {
   return async (dispatch) => {
-    dispatch(clearUser());
-    dispatch(clearAccessToken());
-    dispatch(isAuthenticationError(false));
-    dispatch(isAthenticationInProgress(true));
+    await dispatch(clearUser());
+    await dispatch(clearAccessToken());
+    await dispatch(isAuthenticationError(false));
+    await dispatch(isAthenticationInProgress(true));
 
     try {
       const { data } = await API.post("/auth/login", { email, password });
 
       if (data) {
-        dispatch(isAthenticationInProgress(false));
+        await dispatch(isAthenticationInProgress(false));
         return dispatch(setAccessToken(data.access_token));
       }
     } catch (error) {
-      dispatch(isAthenticationInProgress(false));
+      await dispatch(isAthenticationInProgress(false));
       return dispatch(isAuthenticationError(true));
     }
   };
