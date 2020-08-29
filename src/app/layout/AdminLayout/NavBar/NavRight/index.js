@@ -90,7 +90,6 @@ class NavRight extends Component {
 
 const mapStateToProps = (state) => ({
   ...state.user,
-  accessToken: state.signin.accessToken,
 });
 
 const mapDispatchToProps = {

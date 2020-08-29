@@ -7,8 +7,7 @@ import { clearAccessToken } from "../../actions/signin";
 import { clearUser } from "../../actions/user";
 import { getAccessToken } from "../../api/api";
 
-const PrivateRoute = ({ component: Component, ...rest }) => {
-  const accessToken = getAccessToken();
+const PrivateRoute = ({ component: Component, accessToken, ...rest }) => {
 
   if (accessToken) {
     let tokenExpiration = jwtDecode(accessToken).exp;

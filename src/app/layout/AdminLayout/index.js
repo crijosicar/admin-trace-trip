@@ -44,6 +44,9 @@ class AdminLayout extends Component {
   }
 
   render() {
+
+    console.log("RENDER INDEXXX")
+
     document.addEventListener("fullscreenchange", this.fullScreenExitHandler);
     document.addEventListener(
       "webkitfullscreenchange",
@@ -58,6 +61,7 @@ class AdminLayout extends Component {
     const menu = routes.map((route, index) => {
       return route.component ? ComponentLayout(route, index) : null;
     });
+    
 
     return (
       <Aux>
@@ -92,22 +96,19 @@ class AdminLayout extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    defaultPath: state.layouts.defaultPath,
-    isFullScreen: state.layouts.isFullScreen,
-    collapseMenu: state.layouts.collapseMenu,
-    configBlock: state.layouts.configBlock,
-    layout: state.layouts.layout,
-  };
-};
+const mapStateToProps = (state) => ({
+  defaultPath: state.layouts.defaultPath,
+  isFullScreen: state.layouts.isFullScreen,
+  collapseMenu: state.layouts.collapseMenu,
+  configBlock: state.layouts.configBlock,
+  layout: state.layouts.layout,
+});
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    onFullScreenExit: () => dispatch({ type: actionTypes.FULL_SCREEN_EXIT }),
-    onComponentWillMount: () => dispatch({ type: actionTypes.COLLAPSE_MENU }),
-  };
-};
+const mapDispatchToProps = (dispatch) => ({
+  onFullScreenExit: () => dispatch({ type: actionTypes.FULL_SCREEN_EXIT }),
+  onComponentWillMount: () => dispatch({ type: actionTypes.COLLAPSE_MENU }),
+});
+
 
 export default connect(
   mapStateToProps,
