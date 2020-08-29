@@ -44,9 +44,6 @@ class AdminLayout extends Component {
   }
 
   render() {
-
-    console.log("RENDER INDEXXX")
-
     document.addEventListener("fullscreenchange", this.fullScreenExitHandler);
     document.addEventListener(
       "webkitfullscreenchange",

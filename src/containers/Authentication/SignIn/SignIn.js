@@ -39,7 +39,7 @@ class SignUp extends Component {
 
   timeout = (delay) => new Promise((res) => setTimeout(res, delay));
 
-  handleSubmit = async (e) => {
+  handleSubmit = async () => {
     const { email, password } = this.state;
 
     if (email && password) {
@@ -52,25 +52,21 @@ class SignUp extends Component {
 
       const accessToken = await getAccessToken();
 
-      console.log(accessToken && this.props.accessToken);
-
       if (accessToken && this.props.accessToken)
         this.setState({ redirect: true });
     }
   };
 
-  renderRedirect = () => {
-    if (this.state.redirect) return <Redirect to="/dashboard" />;
-  };
 
   render() {
     const { isAuthInProgress } = this.props;
 
     if (isAuthInProgress) return <Loader />;
 
+    if (this.state.redirect) return <Redirect to="/dashboard" />;
+
     return (
       <Aux>
-        {this.renderRedirect()}
         <div className="auth-wrapper">
           <div className="auth-content">
             <div className="auth-bg">
