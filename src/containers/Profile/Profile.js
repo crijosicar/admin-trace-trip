@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { Row, Col, Card, Form, Button } from "react-bootstrap";
 import { Formik } from "formik";
+import { withRouter } from "react-router-dom";
 
 import "./../../assets/scss/style.scss";
 import Aux from "../../hoc/_Aux";
@@ -363,4 +364,4 @@ const mapDispatchToProps = {
   onUpdateUserAvatar: updateUserAvatar,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Profile);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Profile));
