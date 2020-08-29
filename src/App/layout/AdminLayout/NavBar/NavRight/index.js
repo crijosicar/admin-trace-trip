@@ -6,7 +6,7 @@ import { Redirect } from "react-router-dom";
 import Aux from "../../../../../hoc/_Aux";
 import DEMO from "../../../../../store/constant";
 import { clearAccessToken } from "../../../../../actions/signin";
-import { getUser } from "../../../../../actions/user";
+import { getUser, clearUser } from "../../../../../actions/user";
 
 class NavRight extends Component {
   constructor(props) {
@@ -24,6 +24,8 @@ class NavRight extends Component {
 
   handleOnLogout = () => {
     this.props.onLogout();
+    this.props.onClearUser();
+    
     this.setState({ redirect: true });
   };
 
@@ -95,6 +97,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
   onLogout: clearAccessToken,
   onGetUser: getUser,
+  onClearUser: clearUser,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(NavRight);

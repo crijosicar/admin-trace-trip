@@ -48,7 +48,7 @@ class SignUp extends Component {
         password,
       });
 
-      await this.timeout(500);
+      await this.timeout(1500);
 
       const accessToken = await getAccessToken();
 
