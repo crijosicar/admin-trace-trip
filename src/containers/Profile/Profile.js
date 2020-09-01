@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { Row, Col, Card, Form, Button } from "react-bootstrap";
 import { Formik } from "formik";
 import { withRouter } from "react-router-dom";
+import * as Yup from "yup"
 
 import "./../../assets/scss/style.scss";
 import Aux from "../../hoc/_Aux";
@@ -56,7 +57,7 @@ class Profile extends Component {
     });
   };
 
-  handleOnUpdateUser = (e) => {
+  handleOnUpdateUser = () => {
     this.props.onUpdateUser(this.props.user._id, {
       firstName: this.state.firstName || this.props.user.firstName,
       lastName: this.state.lastName || this.props.user.lastName,
@@ -64,9 +65,7 @@ class Profile extends Component {
     this.setState({ formUpdateUserSubmitted: true });
   };
 
-  handleOnUpdateAvatarUser = (e) => {
-    e.preventDefault();
-
+  handleOnUpdateAvatarUser = () => {
     const formData = new FormData();
     formData.append("avatar", this.state.avatar, this.state.avatar.name);
 
@@ -90,6 +89,24 @@ class Profile extends Component {
       isUpdateUserAvatarError,
       isUpdateUserPasswordError,
     } = this.props;
+
+    const validationSchema = Yup.object().shape({
+      password: Yup
+       .string()
+       .min(8)
+       .matches(
+        /(?=.*[a-z])(?=.*[A-Z])(?=.*d)(?=.*[$@$!#.])[A-Za-zd$@$!%*?&.]{8,}$/,
+        "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and one special case Character"
+      )
+       .required(),
+      confirmPassword: Yup
+       .string()
+       .required()
+       .oneOf(
+       [Yup.ref('password'), null],
+        'Passwords must match',
+      ),
+   })
 
     if (
       isUserUpdateInProgress ||
@@ -197,11 +214,9 @@ class Profile extends Component {
                     }
                   />
                 )}
-                <Row>
-                  <Col md={6}>
+                  <Col md={12}>
                     <Form>
                       <img
-                        width={100}
                         height={120}
                         src={this.props.user.avatar}
                         alt={`${this.props.user.firstName}-${this.props.user.lastName}`}
@@ -225,7 +240,6 @@ class Profile extends Component {
                       </Button>
                     </Form>
                   </Col>
-                </Row>
               </Card.Body>
             </Card>
             <Card>
@@ -243,34 +257,13 @@ class Profile extends Component {
                     }
                   />
                 )}
-                <Row>
                   <Formik
                     onSubmit={this.handleOnUpdatePasswordUser}
                     initialValues={{
                       password: "",
                       confirmPassword: "",
                     }}
-                    validate={(values) => {
-                      const errors = {};
-                      if (!values.password) {
-                        errors.password = "Required";
-                      } else if (
-                        !/(?=.*[a-z])(?=.*[A-Z])(?=.*d)(?=.*[$@$!#.])[A-Za-zd$@$!%*?&.]{8,20}/i.test(
-                          values.password
-                        )
-                      ) {
-                        errors.password = "Invalid password";
-                      }
-
-                      if (!values.confirmPassword) {
-                        errors.confirmPassword = "Required";
-                      } else if (values.confirmPassword !== values.password) {
-                        errors.confirmPassword =
-                          "Confirm Password should match with Password";
-                      }
-
-                      return errors;
-                    }}
+                    validationSchema={validationSchema}
                   >
                     {({
                       handleSubmit,
@@ -338,7 +331,6 @@ class Profile extends Component {
                       </Form>
                     )}
                   </Formik>
-                </Row>
               </Card.Body>
             </Card>
           </Col>

@@ -1,6 +1,8 @@
 import signin from "./signin";
 import layouts from "./layouts";
 import user from "./user";
+import pages from "./pages";
+
 
 const rehydrated = (state = false, action) => {
   switch (action.type) {
@@ -16,4 +18,5 @@ export default {
   signin,
   layouts,
   user,
+  pages,
 };

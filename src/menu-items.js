@@ -29,7 +29,7 @@ export default {
           children: [
             {
               id: "home",
-              title: "Home Page",
+              title: "Home",
               type: "item",
               url: "/page/home",
             },
