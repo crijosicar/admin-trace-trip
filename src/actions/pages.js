@@ -16,7 +16,6 @@ export const setPage = (pages) => ({
   pages,
 });
 
-
 export const getPage = (name) => {
   return async (dispatch) => {
     await dispatch(isGetPageError(false));
@@ -24,7 +23,6 @@ export const getPage = (name) => {
     const headers = { authorization: `Bearer ${await getAccessToken()}` };
 
     try {
-      
       const { data } = await API.get(`/pages/name/${name}`,{ headers });
 
       if (data) {
@@ -34,6 +32,35 @@ export const getPage = (name) => {
     } catch (error) {
       await dispatch(isGetPageInProgress(false));
       return dispatch(isGetPageError(error.message));
+    }
+  };
+};
+
+export const isUpdatePageInProgress = (isUpdatePageInProgress) => ({
+  type: types.IS_UPDATE_PAGE_IN_PROGRESS,
+  isUpdatePageInProgress,
+});
+
+export const isUpdatePageError = (isUpdatePageError) => ({
+  type: types.IS_UPDATE_PAGE_ERROR,
+  isUpdatePageError,
+});
+
+
+export const updatePage = (name, updatedData) => {
+  return async (dispatch) => {
+    await dispatch(isUpdatePageError(false));
+    await dispatch(isUpdatePageInProgress(true));
+    const headers = { authorization: `Bearer ${await getAccessToken()}` };
+
+    try {
+      const { data } = await API.put(`/pages/name/${name}`, updatedData, { headers });
+
+      await dispatch(isUpdatePageInProgress(false));
+      return dispatch(setPage(data));
+    } catch (error) {
+      await dispatch(isUpdatePageInProgress(false));
+      return dispatch(isUpdatePageError(error.message));
     }
   };
 };
